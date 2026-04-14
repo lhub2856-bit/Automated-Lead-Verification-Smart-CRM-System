@@ -1,0 +1,608 @@
+{
+  "name": "Automated Lead Capture, Enrichment & Notification System",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-capture",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        -448
+      ],
+      "id": "59b01471-4b2a-40e2-ab8c-cf3b1c517fa6",
+      "name": "Webhook",
+      "webhookId": ""
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "\"Automated Lead Capture & Notification System",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Source": "\"Automated Lead Capture & Notification System",
+            "Name": "="
+          },
+          "matchingColumns": [
+            "Source"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "E-mail",
+              "displayName": "E-mail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        160,
+        -336
+      ],
+      "id": "2cb017ab-93d1-43ec-b4e3-40b4619f8367",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "YOUR_CHANNEL_ID",
+          "mode": "list",
+          "cachedResultName": "n8n-private"
+        },
+        "text": "=🚀 Naya Lead Mila Hai! Naam: {{ $json.body.name }} Email: {{ $json.body.email }} Phone: {{ $json.body.phone }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        400,
+        -256
+      ],
+      "id": "104cb55f-c0f3-4605-917d-217448ab6576",
+      "name": "Send a message",
+      "webhookId": "",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "",
+        "subject": "Thank you for contacting us!",
+        "message": "=<h3>Assalam u Alaikum {{ $json.body.name }},</h3> <p>Thank you for your interest. Hamari team jaldi aapse raabta kare gi.</p> <p>Shukriya!</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        -256
+      ],
+      "id": "6f58709a-0207-4908-97ef-6b6371f00c6a",
+      "name": "Send a message1",
+      "webhookId": "",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "YOUR_API_KEY"
+            },
+            {
+              "name": "email",
+              "value": ""
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        896,
+        -416
+      ],
+      "id": "88dc21cf-2370-4c32-afd3-9786e9758464",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "edc9bc85-d8f2-430b-9322-2a475dbac931",
+              "leftValue": "={{ $json.email_address }}",
+              "rightValue": "={{ $json.email_deliverability.status }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1104,
+        -368
+      ],
+      "id": "66f600dd-e482-4818-bb92-faaf7d960011",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SHEET",
+          "mode": "list",
+          "cachedResultName": "\"Automated Lead Capture & Notification System",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Send a message').item.json.message.user }}",
+            "E-mail": "={{ $('Send a message').item.json.message.type }}",
+            "Phone": "={{ $('Send a message').item.json.message.ts }}",
+            "Source": "={{ $('Send a message').item.json.message.team }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "E-mail",
+              "displayName": "E-mail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1392,
+        -336
+      ],
+      "id": "7ffe4e55-66d3-48c6-8543-8dc86c291406",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "n8n-private"
+        },
+        "text": "New Valid Data Found\".",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1664,
+        -224
+      ],
+      "id": "",
+      "name": "Send a message2",
+      "webhookId": "",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "",
+        "subject": "alert",
+        "emailType": "text",
+        "message": "New Valid Data Found\".",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1888,
+        -176
+      ],
+      "id": "6bcb7137-5a5a-4aba-a110-74d61b54e556",
+      "name": "Send a message3",
+      "webhookId": "",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Webhook Node (The Entrance)\nFunction: Acts as the \"Doorbell\" or trigger for the entire process.\n\nRole: It listens for incoming data from your website's form. As soon as a customer hits \"Submit,\" this node captures their name, email, and phone number to wake up the workflow.",
+        "height": 576,
+        "width": 176,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -144,
+        -816
+      ],
+      "typeVersion": 1,
+      "id": "ce68d2d4-5add-4348-b0a4-e5b9ac90ea81",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "2. Append or Update Row in Sheet (The Safety Net)\nFunction: Immediate data logging.\n\nRole: Before any verification happens, this node saves the raw data into Google Sheets. This ensures that even if thefails later, you still have a record of the person who tried to contact you.",
+        "height": 576,
+        "width": 176,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        -736
+      ],
+      "typeVersion": 1,
+      "id": "f65464ee-00fc-4e60-8ee8-3dceb501a2cb",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "3. Send a Message (Slack - Initial Alert)\nFunction: Internal team notification.\n\nRole: It sends an instant message to your Slack channel, letting the team know that a new inquiry has just arrived and is currently being processed.",
+        "height": 576,
+        "width": 192,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        352,
+        -608
+      ],
+      "typeVersion": 1,
+      "id": "cf21db34-1907-442b-854d-791fcce3c41b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "4. Send a Message 1 (Gmail - Auto-Response)\nFunction: Customer engagement.\n\nRole: This node sends an automated \"Thank You\" email to the customer. It confirms to them that their message was received, providing a professional first impression.",
+        "height": 576,
+        "width": 192,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        608,
+        -592
+      ],
+      "typeVersion": 1,
+      "id": "dbe35a4f-87de-4f57-9cc3-86f68a5b2fdd",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "5. HTTP Request (The Validator)\nFunction: Background check and enrichment.\n\nRole: It takes the customer's email and sends it to Abstract API to verify if the email is real, deliverable, or just a fake/disposable address. It also identifies the user's city or country.",
+        "height": 576,
+        "width": 176,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        -800
+      ],
+      "typeVersion": 1,
+      "id": "90e3ede2-7c3d-4a46-9c19-8c4c181d1958",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "6. If Node (The Gatekeeper)\nFunction: Decision making.\n\nRole: This node acts as an intelligent guard. It checks the result from the API:\n\nTrue: If the email is valid, the data moves forward to the \"Success\" path.\n\nFalse: If the email is fake or spam, the workflow stops or takes a different route to prevent junk leads.",
+        "height": 592,
+        "width": 208,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1056,
+        -800
+      ],
+      "typeVersion": 1,
+      "id": "c14f039f-8669-4b6b-ae9e-ad6c10cb7ab8",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "7. Append Row in Sheet (The Gold List)\nFunction: Final database entry.\n\nRole: Once the lead is verified as \"True,\" this node saves the cleaned and enriched data into a separate \"Verified Leads\" sheet for the sales team.",
+        "height": 592,
+        "width": 160,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1360,
+        -688
+      ],
+      "typeVersion": 1,
+      "id": "fbb2043f-84ee-4299-add3-a034e615938a",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "8. Send a Message 2 (Slack - Final Success)\nFunction: Urgent sales notification.\n\nRole: It alerts the sales team on Slack that a high-quality, verified lead is ready. It includes the lead's details so they can call the customer immediately.",
+        "height": 544,
+        "width": 192,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1600,
+        -560
+      ],
+      "typeVersion": 1,
+      "id": "62a6bcc8-a86b-4a4a-968c-6f88587a648d",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "9. Send a Message 3 (Gmail - Admin Report)\nFunction: Management reporting.\n\nRole: A final email is sent to the manager or admin, providing a formal record of the successful lead capture for tracking and performance reviews.",
+        "height": 512,
+        "width": 192,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1840,
+        -496
+      ],
+      "typeVersion": 1,
+      "id": "974f648d-7b79-429f-8857-250cd442f32d",
+      "name": "Sticky Note8"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message2": {
+      "main": [
+        [
+          {
+            "node": "Send a message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": ""
+  },
+  "id": "5S6MWxAHj0pqOGkW",
+  "tags": []
+}
